@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+project.ext.lwjglVersion = "3.2.3"
+project.ext.jomlVersion = "1.9.19"
+project.ext.lwjglNatives = "natives-macos"
+
+repositories {
+    jcenter()
+	mavenCentral()
+}
+
+dependencies {
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+	
+    implementation 'com.google.guava:guava:27.0.1-jre'
+	implementation "org.lwjgl:lwjgl"
+	implementation "org.lwjgl:lwjgl-assimp"
+	implementation "org.lwjgl:lwjgl-bgfx"
+	implementation "org.lwjgl:lwjgl-glfw"
+	implementation "org.lwjgl:lwjgl-nanovg"
+	implementation "org.lwjgl:lwjgl-openal"
+	implementation "org.lwjgl:lwjgl-opengl"
+	implementation "org.lwjgl:lwjgl-par"
+	implementation "org.lwjgl:lwjgl-stb"
+	implementation "org.lwjgl:lwjgl-vulkan"
+	implementation "org.joml:joml:${jomlVersion}"
+	
+	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-bgfx::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-nanovg::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-openal::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+	runtimeOnly "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'uk.co.zacgarby.mhm.App',
+			 	   'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+	}
+}
+
+mainClassName = 'uk.co.zacgarby.mhm.App'
+applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
