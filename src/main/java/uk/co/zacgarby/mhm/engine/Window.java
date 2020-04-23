@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
@@ -71,7 +72,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
 
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -88,6 +88,7 @@ public class Window {
 	private long window;
 	private Game delegate;
 	public int shader;
+	private double lastFrame;
 	
 	public Window(Game game) {
 		delegate = game;
@@ -177,11 +178,17 @@ public class Window {
 
 	private void loop() {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		
+		lastFrame = glfwGetTime();
 
-		while (!glfwWindowShouldClose(window)) {
+		while (!glfwWindowShouldClose(window)) {			
+			double now = glfwGetTime();
+			double dt = now - lastFrame;
+			lastFrame = now;
+			 
+			delegate.update(dt);
+			
 			glClear(GL_COLOR_BUFFER_BIT);
-
-			delegate.update();
 			delegate.render();
 			
 			glfwSwapBuffers(window);

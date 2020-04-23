@@ -27,8 +27,8 @@ public class App implements Game {
 	}
 
 	@Override
-	public void update() {
-		x += 0.01;
+	public void update(double dt) {
+		x += 0.2 * dt;
 	}
 
 	@Override

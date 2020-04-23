@@ -4,6 +4,6 @@ public interface Game {
 	public void setup();
 	public void dispose();
 	
-	public void update();
+	public void update(double dt);
 	public void render();
 }
