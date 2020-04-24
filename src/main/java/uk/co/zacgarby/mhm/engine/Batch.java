@@ -22,9 +22,11 @@ public class Batch {
 	private IntBuffer triangles;
 	private TextureAtlas atlas;
 	private HashMap<Texture, TextureRegion> regions;
-	private int vbo, ebo, amount;
+	private int vbo, ebo, amount, maxSprites;
 	
 	public Batch(int maxSprites) {
+		this.maxSprites = maxSprites;
+		
 		vertices = MemoryUtil.memAllocFloat(maxSprites * 4 * 7);
 		triangles = MemoryUtil.memAllocInt(maxSprites * 2 * 3);
 		amount = 0;
@@ -47,7 +49,25 @@ public class Batch {
 		regions = new HashMap<>();
 	}
 	
+	public void start() {
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		
+		glEnableVertexAttribArray(Window.POSITION);
+		glVertexAttribPointer(1, 2, GL_FLOAT, false, 7 * 4, 0);
+		
+		glEnableVertexAttribArray(Window.COLOUR);
+		glVertexAttribPointer(2, 3, GL_FLOAT, false, 7 * 4, 2 * 4);
+		
+		glEnableVertexAttribArray(Window.TEXCOORD);
+		glVertexAttribPointer(3, 2, GL_FLOAT, false, 7 * 4, 5 * 4);
+	}
+	
 	public void draw(Texture t, float x, float y, float w, float h) {
+		if (amount + 1 > maxSprites) {
+			throw new RuntimeException("Attempted to draw too many sprites in the batch");
+		}
+		
 		if (!regions.containsKey(t)) {
 			throw new RuntimeException("Attempted to draw an unregistered texture, or texture atlas hasn't been created.");
 		}
@@ -55,7 +75,7 @@ public class Batch {
 		TextureRegion reg = regions.get(t);
 		
 		int count = amount * 4;
-		
+				
 		//       X, Y                 R, G, B                Tx, Ty
 		vertices.put(x).put(y)        .put(1).put(1).put(1)  .put(reg.getX()).put(reg.getY());
 		vertices.put(x + w).put(y)    .put(1).put(1).put(1)  .put(reg.getX() + reg.getW()).put(reg.getY());
