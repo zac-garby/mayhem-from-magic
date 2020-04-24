@@ -3,6 +3,7 @@ package uk.co.zacgarby.mhm.engine;
 import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -31,6 +32,21 @@ public class Texture {
 		param(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	}
+	
+	public Texture(int width, int height) {
+		this.width = width;
+		this.height = height;
+		
+		handle = glGenTextures();
+		
+		bind();
+		param(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		param(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		param(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		param(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	}
 	
 	public Texture(String path) {
@@ -68,7 +84,7 @@ public class Texture {
 		glTexParameteri(GL_TEXTURE_2D, p, v);
 	}
 
-	int getHandle() {
+	public int getHandle() {
 		return handle;
 	}
 	
