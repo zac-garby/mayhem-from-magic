@@ -88,6 +88,10 @@ public class Batch {
 		amount++;
 	}
 	
+	public void draw(Texture t, float x, float y) {
+		draw(t, x, y, t.getWidth(), t.getHeight());
+	}
+	
 	public void flush() {
 		if (amount == 0) {
 			return;
