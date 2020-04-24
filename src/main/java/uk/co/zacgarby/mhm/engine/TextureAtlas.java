@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 public class TextureAtlas {
 	private Texture atlas;
@@ -39,7 +40,8 @@ public class TextureAtlas {
 			for (int i = 0; i < textures.size(); i++) {
 				Texture t = textures.get(i);
 				t.bind();
-				ByteBuffer tex = stack.malloc(t.getWidth() * t.getHeight() * 4);
+				
+				ByteBuffer tex = MemoryUtil.memAlloc(t.getWidth() * t.getHeight() * 4);
 				glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex);
 				
 				for (int x = 0; x < t.getWidth(); x++) {
@@ -52,6 +54,8 @@ public class TextureAtlas {
 						}
 					}
 				}
+				
+				MemoryUtil.memFree(tex);
 				
 				startX += t.getWidth();
 			}

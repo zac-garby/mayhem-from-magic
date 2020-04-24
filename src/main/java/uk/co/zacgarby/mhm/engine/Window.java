@@ -50,6 +50,7 @@ public class Window {
 	}
 
 	private void init() {
+		org.lwjgl.system.Configuration.STACK_SIZE.set(1024 * 4);
 		GLFWErrorCallback.createPrint(System.err).set();
 		
 		if (!glfwInit()) {
