@@ -23,7 +23,7 @@ public class Window {
 	public static int POSITION = 1;
 	public static int COLOUR = 2;
 	public static int TEXCOORD = 3;
-	public static int TEX;
+	public static int ATLAS;
 	
 	private long window;
 	private Game delegate;
@@ -187,8 +187,8 @@ public class Window {
 		Matrix4f proj = new Matrix4f().ortho(0f, 250f, 0f, 200f, -1f, 1f);
 		glUniformMatrix4fv(uniProj, false, proj.get(new float[16]));
 		
-		Window.TEX = glGetUniformLocation(shader, "tex");
-		glUniform1i(Window.TEX, 0);
+		Window.ATLAS = glGetUniformLocation(shader, "atlas");
+		glUniform1i(Window.ATLAS, 0);
 	}
 	
 	private static String readFile(String path, Charset encoding) throws IOException {

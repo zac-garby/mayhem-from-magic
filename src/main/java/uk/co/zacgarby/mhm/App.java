@@ -9,7 +9,6 @@ import uk.co.zacgarby.mhm.engine.Window;
 public class App implements Game {
 	private Batch batch, lightBatch;
 	private Texture sidebar;
-	private float x = 0;
 	private Framebuffer lightmap;
 	
 	@Override
@@ -33,7 +32,7 @@ public class App implements Game {
 
 	@Override
 	public void update(double dt) {
-		x += 0.2 * dt;
+		
 	}
 
 	@Override
