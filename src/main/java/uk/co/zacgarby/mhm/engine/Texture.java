@@ -80,6 +80,12 @@ public class Texture {
 		glBindTexture(GL_TEXTURE_2D, handle);
 	}
 	
+	public void bind(int unit) {
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, handle);
+		glActiveTexture(GL_TEXTURE0);
+	}
+	
 	public void param(int p, int v) {
 		glTexParameteri(GL_TEXTURE_2D, p, v);
 	}

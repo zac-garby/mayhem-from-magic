@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -20,14 +21,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 public class Window {
-	public static int POSITION = 1;
-	public static int COLOUR = 2;
-	public static int TEXCOORD = 3;
-	public static int ATLAS;
-	
 	private long window;
 	private Game delegate;
-	public int shader;
 	private double lastFrame;
 	
 	public Window(Game game) {
@@ -110,7 +105,6 @@ public class Window {
 		int vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 		
-		setupShaders();
 		delegate.setup();
 		
 		glEnable(GL_BLEND);
@@ -135,64 +129,5 @@ public class Window {
 			
 			glfwSwapBuffers(window);
 		}
-	}
-	
-	private void setupShaders() {
-		String fragSource = null, vertSource = null;
-		
-		try {
-			fragSource = readFile("resources/shaders/shader.frag", StandardCharsets.UTF_8);
-			vertSource = readFile("resources/shaders/shader.vert", StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new RuntimeException("Couldn't load shader files.");
-		}
-				
-		int vertShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertShader, vertSource);
-		glCompileShader(vertShader);
-		if (glGetShaderi(vertShader, GL_COMPILE_STATUS) != GL_TRUE) {
-			throw new RuntimeException(glGetShaderInfoLog(vertShader));
-		}
-		
-		int fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragShader, fragSource);
-		glCompileShader(fragShader);
-		if (glGetShaderi(fragShader, GL_COMPILE_STATUS) != GL_TRUE) {
-			throw new RuntimeException(glGetShaderInfoLog(fragShader));
-		}
-		
-		shader = glCreateProgram();
-		glAttachShader(shader, vertShader);
-		glAttachShader(shader, fragShader);
-		glBindFragDataLocation(shader, 0, "fragColour");
-		glBindAttribLocation(shader, 1, "position");
-		glBindAttribLocation(shader, 2, "colour");
-		glBindAttribLocation(shader, 3, "texcoord");
-		glLinkProgram(shader);
-		if (glGetProgrami(shader, GL_LINK_STATUS) != GL_TRUE) {
-			throw new RuntimeException(glGetProgramInfoLog(shader));
-		}
-		
-		glUseProgram(shader);
-		
-		int uniModel = glGetUniformLocation(shader, "model");
-		Matrix4f model = new Matrix4f();
-		glUniformMatrix4fv(uniModel, false, model.get(new float[16]));
-		
-		int uniView = glGetUniformLocation(shader, "view");
-		Matrix4f view = new Matrix4f();
-		glUniformMatrix4fv(uniView, false, view.get(new float[16]));
-		
-		int uniProj = glGetUniformLocation(shader, "projection");
-		Matrix4f proj = new Matrix4f().ortho(0f, 250f, 0f, 200f, -1f, 1f);
-		glUniformMatrix4fv(uniProj, false, proj.get(new float[16]));
-		
-		Window.ATLAS = glGetUniformLocation(shader, "atlas");
-		glUniform1i(Window.ATLAS, 0);
-	}
-	
-	private static String readFile(String path, Charset encoding) throws IOException {
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		return new String(encoded, encoding);
 	}
 }

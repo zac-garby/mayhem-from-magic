@@ -21,6 +21,7 @@ public class Batch {
 	private FloatBuffer vertices;
 	private IntBuffer triangles;
 	private TextureAtlas atlas;
+	private Shader shader;
 	private HashMap<Texture, TextureRegion> regions;
 	private int vbo, ebo, amount, maxSprites;
 	
@@ -36,14 +37,16 @@ public class Batch {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		
-		glEnableVertexAttribArray(Window.POSITION);
+		glEnableVertexAttribArray(Shader.POSITION_LOC); // this probably doesn't need to be here
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, 7 * 4, 0);
 		
-		glEnableVertexAttribArray(Window.COLOUR);
+		glEnableVertexAttribArray(Shader.COLOUR_LOC);
 		glVertexAttribPointer(2, 3, GL_FLOAT, false, 7 * 4, 2 * 4);
 		
-		glEnableVertexAttribArray(Window.TEXCOORD);
+		glEnableVertexAttribArray(Shader.TEXCOORD_LOC);
 		glVertexAttribPointer(3, 2, GL_FLOAT, false, 7 * 4, 5 * 4);
+		
+		shader = new Shader("resources/shaders/passthrough.frag", "resources/shaders/passthrough.vert");
 		
 		atlas = new TextureAtlas();
 		regions = new HashMap<>();
@@ -53,13 +56,13 @@ public class Batch {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		
-		glEnableVertexAttribArray(Window.POSITION);
+		glEnableVertexAttribArray(Shader.POSITION_LOC);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, 7 * 4, 0);
 		
-		glEnableVertexAttribArray(Window.COLOUR);
+		glEnableVertexAttribArray(Shader.COLOUR_LOC);
 		glVertexAttribPointer(2, 3, GL_FLOAT, false, 7 * 4, 2 * 4);
 		
-		glEnableVertexAttribArray(Window.TEXCOORD);
+		glEnableVertexAttribArray(Shader.TEXCOORD_LOC);
 		glVertexAttribPointer(3, 2, GL_FLOAT, false, 7 * 4, 5 * 4);
 	}
 	
@@ -99,6 +102,8 @@ public class Batch {
 		
 		vertices.flip();
 		triangles.flip();
+		
+		shader.use();
 		
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
