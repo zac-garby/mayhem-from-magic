@@ -15,9 +15,10 @@ public class Framebuffer {
 		glBindFramebuffer(GL_FRAMEBUFFER, handle);
 		
 		tex = new Texture(width, height);
-		tex.bind();
+		glBindTexture(GL_TEXTURE_2D, 0);
 		
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex.getHandle(), 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	public int getHandle() {
@@ -36,11 +37,21 @@ public class Framebuffer {
 		return height;
 	}
 
-	public void bind() {
+	private void bind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, handle);
 	}
 	
-	public void unbind() {
+	private void unbind() {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	
+	public void start() {
+		bind();
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+	
+	public void finish() {
+		unbind();
 	}
 }

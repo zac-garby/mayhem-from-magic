@@ -34,17 +34,6 @@ public class Batch {
 		
 		vbo = glGenBuffers();		
 		ebo = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		
-		glEnableVertexAttribArray(Shader.POSITION_LOC); // this probably doesn't need to be here
-		glVertexAttribPointer(1, 2, GL_FLOAT, false, 7 * 4, 0);
-		
-		glEnableVertexAttribArray(Shader.COLOUR_LOC);
-		glVertexAttribPointer(2, 3, GL_FLOAT, false, 7 * 4, 2 * 4);
-		
-		glEnableVertexAttribArray(Shader.TEXCOORD_LOC);
-		glVertexAttribPointer(3, 2, GL_FLOAT, false, 7 * 4, 5 * 4);
 		
 		shader = new Shader("resources/shaders/passthrough.frag", "resources/shaders/passthrough.vert");
 		
@@ -104,6 +93,7 @@ public class Batch {
 		triangles.flip();
 		
 		shader.use();
+		glUniform1i(Shader.ATLAS_LOC, 0);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
@@ -115,6 +105,11 @@ public class Batch {
 		glDrawElements(GL_TRIANGLES, 6 * amount, GL_UNSIGNED_INT, 0);
 		
 		amount = 0;
+	}
+	
+	public void uniform1i(int loc, int val) {
+		shader.use();
+		glUniform1i(loc, val);
 	}
 	
 	public void register(Texture t) {
@@ -132,5 +127,9 @@ public class Batch {
 			regions.put(t, reg);
 			x += width;
 		}
+	}
+	
+	public void useShader(Shader s) {
+		shader = s;
 	}
 }
