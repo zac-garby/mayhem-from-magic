@@ -62,7 +62,7 @@ public class Window {
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
 		// Create the window
-		window = glfwCreateWindow(1000, 800, "Game", NULL, NULL);
+		window = glfwCreateWindow(1000, 800, "Mayhem from Magic", NULL, NULL);
 		if (window == NULL) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}

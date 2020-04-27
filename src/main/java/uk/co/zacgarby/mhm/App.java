@@ -9,20 +9,19 @@ import uk.co.zacgarby.mhm.engine.Window;
 
 public class App implements Game {
 	private Batch batch, lightBatch;
-	private Texture sidebar;
+	private Texture ui;
 	private Framebuffer lightmap;
 	
 	@Override
 	public void setup() {
-		sidebar = new Texture("resources/textures/sidebar.png");
+		ui = new Texture("resources/textures/ui.png");
 		
 		batch = new Batch(256);
-		batch.register(sidebar);
+		batch.register(ui);
 		batch.createAtlas();
 		batch.useShader(new Shader("resources/shaders/shader.frag", "resources/shaders/shader.vert"));
 		
 		lightBatch = new Batch(256);
-		lightBatch.register(sidebar);
 		lightBatch.createAtlas();
 		
 		lightmap = new Framebuffer(160, 160);
@@ -50,7 +49,7 @@ public class App implements Game {
 		batch.uniform1i(Shader.LIGHTMAP_LOC, 1);
 		
 		batch.start();
-		batch.draw(sidebar, 170, 0);
+		batch.draw(ui, 0, 0);
 		batch.flush();
 	}
 	
