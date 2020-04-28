@@ -51,7 +51,7 @@ public class Framebuffer {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 	
-	public void finish() {
+	public void end() {
 		unbind();
 	}
 }

@@ -2,14 +2,14 @@ package uk.co.zacgarby.mhm.engine;
 
 class TextureRegion {
 	private float x, y, w, h;
-	private TextureAtlas atlas;
+	private Texture tex;
 	
-	public TextureRegion(float x, float y, float w, float h, TextureAtlas atlas) {
+	public TextureRegion(float x, float y, float w, float h, Texture texture) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.atlas = atlas;
+		this.tex = texture;
 	}
 
 	public float getX() {
@@ -28,8 +28,8 @@ class TextureRegion {
 		return h;
 	}
 
-	public TextureAtlas getAtlas() {
-		return atlas;
+	public Texture getTexture() {
+		return tex;
 	}
 
 	@Override

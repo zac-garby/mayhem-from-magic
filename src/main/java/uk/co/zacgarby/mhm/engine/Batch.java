@@ -20,9 +20,8 @@ import org.lwjgl.system.MemoryUtil;
 public class Batch {
 	private FloatBuffer vertices;
 	private IntBuffer triangles;
-	private TextureAtlas atlas;
 	private Shader shader;
-	private HashMap<Texture, TextureRegion> regions;
+	private Texture lastTexture;
 	private int vbo, ebo, amount, maxSprites;
 	
 	public Batch(int maxSprites) {
@@ -36,9 +35,6 @@ public class Batch {
 		ebo = glGenBuffers();
 		
 		shader = new Shader("resources/shaders/passthrough.frag", "resources/shaders/passthrough.vert");
-		
-		atlas = new TextureAtlas();
-		regions = new HashMap<>();
 	}
 	
 	public void start() {
@@ -56,23 +52,22 @@ public class Batch {
 	}
 	
 	public void draw(Texture t, float x, float y, float w, float h) {
+		if (t != lastTexture) {
+			flush();
+			lastTexture = t;
+		}
+		
 		if (amount + 1 > maxSprites) {
-			throw new RuntimeException("Attempted to draw too many sprites in the batch");
+			flush();
 		}
-		
-		if (!regions.containsKey(t)) {
-			throw new RuntimeException("Attempted to draw an unregistered texture, or texture atlas hasn't been created.");
-		}
-		
-		TextureRegion reg = regions.get(t);
 		
 		int count = amount * 4;
 				
 		//       X, Y                 R, G, B                Tx, Ty
-		vertices.put(x).put(y)        .put(1).put(1).put(1)  .put(reg.getX()).put(reg.getY());
-		vertices.put(x + w).put(y)    .put(1).put(1).put(1)  .put(reg.getX() + reg.getW()).put(reg.getY());
-		vertices.put(x + w).put(y + h).put(1).put(1).put(1)  .put(reg.getX() + reg.getW()).put(reg.getY() + reg.getH());
-		vertices.put(x).put(y + h)    .put(1).put(1).put(1)  .put(reg.getX()).put(reg.getY() + reg.getH());
+		vertices.put(x).put(y)         .put(1).put(1).put(1) .put(0).put(0);
+		vertices.put(x + w).put(y)     .put(1).put(1).put(1) .put(1).put(0);
+		vertices.put(x + w).put(y + h) .put(1).put(1).put(1) .put(1).put(1);
+		vertices.put(x).put(y + h)     .put(1).put(1).put(1) .put(0).put(1);
 		
 		triangles.put(count).put(count + 1).put(count + 2);
 		triangles.put(count + 2).put(count + 3).put(count);
@@ -101,32 +96,19 @@ public class Batch {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles, GL_STATIC_DRAW);
 		
-		atlas.bind();
+		lastTexture.bind();
 		glDrawElements(GL_TRIANGLES, 6 * amount, GL_UNSIGNED_INT, 0);
 		
 		amount = 0;
 	}
 	
+	public void end() {
+		flush();
+	}
+	
 	public void uniform1i(int loc, int val) {
 		shader.use();
 		glUniform1i(loc, val);
-	}
-	
-	public void register(Texture t) {
-		atlas.register(t);
-	}
-	
-	public void createAtlas() {
-		atlas.create();
-		
-		float widPerPixel = 1 / (float) atlas.width;
-		float x = 0;
-		for (Texture t : atlas.textures) {
-			float width = widPerPixel * t.getWidth();
-			TextureRegion reg = new TextureRegion(x, 0, width, (float) t.getHeight() / (float) atlas.height, atlas);
-			regions.put(t, reg);
-			x += width;
-		}
 	}
 	
 	public void useShader(Shader s) {

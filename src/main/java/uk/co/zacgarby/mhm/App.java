@@ -9,20 +9,18 @@ import uk.co.zacgarby.mhm.engine.Window;
 
 public class App implements Game {
 	private Batch batch, lightBatch;
-	private Texture ui;
+	private Texture ui, cursor;
 	private Framebuffer lightmap;
 	
 	@Override
 	public void setup() {
 		ui = new Texture("resources/textures/ui.png");
+		cursor = new Texture("resources/textures/cursor.png");
 		
 		batch = new Batch(256);
-		batch.register(ui);
-		batch.createAtlas();
 		batch.useShader(new Shader("resources/shaders/shader.frag", "resources/shaders/shader.vert"));
 		
 		lightBatch = new Batch(256);
-		lightBatch.createAtlas();
 		
 		lightmap = new Framebuffer(160, 160);
 		
@@ -43,14 +41,15 @@ public class App implements Game {
 		lightmap.start();
 		lightBatch.start();
 		lightBatch.flush();
-		lightmap.finish();
+		lightmap.end();
 		
 		lightmap.getTex().bind(1);
 		batch.uniform1i(Shader.LIGHTMAP_LOC, 1);
 		
 		batch.start();
 		batch.draw(ui, 0, 0);
-		batch.flush();
+		batch.draw(cursor, 80, 100);
+		batch.end();
 	}
 	
 	public static void main(String[] args) {
