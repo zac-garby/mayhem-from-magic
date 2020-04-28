@@ -1,4 +1,4 @@
-package uk.co.zacgarby.mhm.engine;
+package uk.co.zacgarby.mhm.graphics;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;

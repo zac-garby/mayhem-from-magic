@@ -1,11 +1,11 @@
 package uk.co.zacgarby.mhm;
 
-import uk.co.zacgarby.mhm.engine.Batch;
-import uk.co.zacgarby.mhm.engine.Framebuffer;
-import uk.co.zacgarby.mhm.engine.Game;
-import uk.co.zacgarby.mhm.engine.Shader;
-import uk.co.zacgarby.mhm.engine.Texture;
-import uk.co.zacgarby.mhm.engine.Window;
+import uk.co.zacgarby.mhm.graphics.Batch;
+import uk.co.zacgarby.mhm.graphics.Framebuffer;
+import uk.co.zacgarby.mhm.graphics.Game;
+import uk.co.zacgarby.mhm.graphics.Shader;
+import uk.co.zacgarby.mhm.graphics.Texture;
+import uk.co.zacgarby.mhm.graphics.Window;
 
 public class App extends Game {
 	private Batch batch, lightBatch;

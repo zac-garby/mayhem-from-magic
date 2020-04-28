@@ -1,4 +1,4 @@
-package uk.co.zacgarby.mhm.engine;
+package uk.co.zacgarby.mhm.graphics;
 
 class TextureRegion {
 	private float x, y, w, h;
