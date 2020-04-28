@@ -60,17 +60,35 @@ public class Window {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-
+		
 		// Create the window
 		window = glfwCreateWindow(1000, 800, "Mayhem from Magic", NULL, NULL);
 		if (window == NULL) {
 			throw new RuntimeException("Failed to create the GLFW window");
 		}
+		
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-			if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-				glfwSetWindowShouldClose(window, true);
+			if (action == GLFW_PRESS) {
+				delegate.keyDown(key, scancode, mods);
+			} else if (action == GLFW_RELEASE) {
+				delegate.keyUp(key, scancode, mods);
 			}
+		});
+		
+		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+			if (action == GLFW_PRESS) {
+				delegate.mouseDown(button, mods);
+			} else if (action == GLFW_RELEASE) {
+				delegate.mouseUp(button, mods);
+			}
+		});
+		
+		glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+			int px = (int) xpos / 4;
+			int py = (int) (800 - ypos) / 4;
+			delegate.cursorMoved(px, py);
 		});
 
 		// Get the thread stack and push a new frame

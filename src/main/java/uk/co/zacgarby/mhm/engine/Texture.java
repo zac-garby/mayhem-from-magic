@@ -94,11 +94,11 @@ public class Texture {
 		return handle;
 	}
 	
-	int getWidth() {
+	public int getWidth() {
 		return width;
 	}
 
-	int getHeight() {
+	public int getHeight() {
 		return height;
 	}
 

@@ -7,10 +7,11 @@ import uk.co.zacgarby.mhm.engine.Shader;
 import uk.co.zacgarby.mhm.engine.Texture;
 import uk.co.zacgarby.mhm.engine.Window;
 
-public class App implements Game {
+public class App extends Game {
 	private Batch batch, lightBatch;
 	private Texture ui, cursor;
 	private Framebuffer lightmap;
+	private int cx, cy;
 	
 	@Override
 	public void setup() {
@@ -24,6 +25,8 @@ public class App implements Game {
 		
 		lightmap = new Framebuffer(160, 160);
 		
+		cx = 0;
+		cy = 0;
 	}
 
 	@Override
@@ -48,8 +51,14 @@ public class App implements Game {
 		
 		batch.start();
 		batch.draw(ui, 0, 0);
-		batch.draw(cursor, 80, 100);
+		batch.draw(cursor, cx - 1, cy - cursor.getHeight() + 2);
 		batch.end();
+	}
+	
+	@Override
+	public void cursorMoved(int x, int y) {
+		cx = x;
+		cy = y;
 	}
 	
 	public static void main(String[] args) {
