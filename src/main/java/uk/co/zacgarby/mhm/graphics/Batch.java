@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL33.*;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
 
 import org.lwjgl.system.MemoryUtil;
 
