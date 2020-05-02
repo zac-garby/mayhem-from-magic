@@ -62,7 +62,7 @@ public class Batch {
 		
 		int count = amount * 4;
 				
-		//       X, Y                 R, G, B                Tx, Ty
+		//       X, Y                   R, G, B                Tx, Ty
 		vertices.put(x).put(y)         .put(1).put(1).put(1) .put(0).put(0);
 		vertices.put(x + w).put(y)     .put(1).put(1).put(1) .put(1).put(0);
 		vertices.put(x + w).put(y + h) .put(1).put(1).put(1) .put(1).put(1);
@@ -78,11 +78,39 @@ public class Batch {
 		draw(t, x, y, t.getWidth(), t.getHeight());
 	}
 	
+	public void draw(TextureRegion reg, float x, float y, float w, float h) {
+		if (reg.getTexture() != lastTexture) {
+			flush();
+			lastTexture = reg.getTexture();
+		}
+		
+		if (amount + 1 > maxSprites) {
+			flush();
+		}
+		
+		int count = amount * 4;
+				
+		//       X, Y                   R, G, B               Tx, Ty
+		vertices.put(x).put(y)         .put(1).put(1).put(1) .put(reg.getTx1()).put(reg.getTy1());
+		vertices.put(x + w).put(y)     .put(1).put(1).put(1) .put(reg.getTx2()).put(reg.getTy1());
+		vertices.put(x + w).put(y + h) .put(1).put(1).put(1) .put(reg.getTx2()).put(reg.getTy2());
+		vertices.put(x).put(y + h)     .put(1).put(1).put(1) .put(reg.getTx1()).put(reg.getTy2());
+		
+		triangles.put(count).put(count + 1).put(count + 2);
+		triangles.put(count + 2).put(count + 3).put(count);
+	
+		amount++;
+	}
+	
+	public void draw(TextureRegion reg, float x, float y) {
+		draw(reg, x, y, reg.getWidth(), reg.getHeight());
+	}
+	
 	public void flush() {
 		if (amount == 0) {
 			return;
 		}
-		
+				
 		vertices.flip();
 		triangles.flip();
 		
@@ -98,6 +126,9 @@ public class Batch {
 		lastTexture.bind();
 		glDrawElements(GL_TRIANGLES, 6 * amount, GL_UNSIGNED_INT, 0);
 		
+		vertices.limit(vertices.capacity());
+		triangles.limit(triangles.capacity());
+		
 		amount = 0;
 	}
 	
@@ -108,6 +139,11 @@ public class Batch {
 	public void uniform1i(int loc, int val) {
 		shader.use();
 		glUniform1i(loc, val);
+	}
+	
+	public void uniform4f(int loc, float r, float g, float b, float a) {
+		shader.use();
+		glUniform4f(loc, r, g, b, a);
 	}
 	
 	public void useShader(Shader s) {

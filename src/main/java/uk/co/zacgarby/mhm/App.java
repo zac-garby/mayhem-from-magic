@@ -1,6 +1,7 @@
 package uk.co.zacgarby.mhm;
 
 import uk.co.zacgarby.mhm.graphics.Batch;
+import uk.co.zacgarby.mhm.graphics.Font;
 import uk.co.zacgarby.mhm.graphics.Framebuffer;
 import uk.co.zacgarby.mhm.graphics.Game;
 import uk.co.zacgarby.mhm.graphics.Shader;
@@ -9,14 +10,17 @@ import uk.co.zacgarby.mhm.graphics.Window;
 
 public class App extends Game {
 	private Batch batch, lightBatch;
-	private Texture ui, cursor;
+	private Texture cursor;
 	private Framebuffer lightmap;
 	private int cx, cy;
+	private UI ui;
+	private Player player;
 	
 	@Override
-	public void setup() {
-		ui = new Texture("resources/textures/ui.png");
+	public void setup() {		
 		cursor = new Texture("resources/textures/cursor.png");
+		
+		Font.setupFonts();
 		
 		batch = new Batch(256);
 		batch.useShader(new Shader("resources/shaders/shader.frag", "resources/shaders/shader.vert"));
@@ -27,6 +31,9 @@ public class App extends Game {
 		
 		cx = 0;
 		cy = 0;
+		
+		player = new Player("zac");
+		ui = new UI(player);
 	}
 
 	@Override
@@ -50,7 +57,7 @@ public class App extends Game {
 		batch.uniform1i(Shader.LIGHTMAP_LOC, 1);
 		
 		batch.start();
-		batch.draw(ui, 0, 0);
+		ui.draw(batch);
 		batch.draw(cursor, cx - 1, cy - cursor.getHeight() + 2);
 		batch.end();
 	}
