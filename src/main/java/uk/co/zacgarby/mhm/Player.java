@@ -2,8 +2,9 @@ package uk.co.zacgarby.mhm;
 
 public class Player extends Entity {
 	private int money;
-	private int mana;
+	private int mana, maxMana;
 	private Stats stats;
+	private Title title;
 	
 	public Player(String name) {
 		setName(name);
@@ -14,6 +15,7 @@ public class Player extends Entity {
 		setXP(0);
 		setMoney(0);
 		setStats(new Stats());
+		setTitle(Title.PYROMANCER);
 	}
 	
 	public int getSilver() {
@@ -54,5 +56,21 @@ public class Player extends Entity {
 
 	public void setStats(Stats stats) {
 		this.stats = stats;
+	}
+
+	public Title getTitle() {
+		return title;
+	}
+
+	public void setTitle(Title title) {
+		this.title = title;
+	}
+
+	public int getMaxMana() {
+		return maxMana;
+	}
+
+	public void setMaxMana(int maxMana) {
+		this.maxMana = maxMana;
 	}
 }

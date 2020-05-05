@@ -7,26 +7,31 @@ import uk.co.zacgarby.mhm.graphics.Game;
 import uk.co.zacgarby.mhm.graphics.Shader;
 import uk.co.zacgarby.mhm.graphics.Texture;
 import uk.co.zacgarby.mhm.graphics.Window;
+import uk.co.zacgarby.mhm.world.Level;
+import uk.co.zacgarby.mhm.world.Tile;
+import uk.co.zacgarby.mhm.world.tiles.Dirt;
 
-public class App extends Game {
+public class App extends Game {	
 	private Batch batch, lightBatch;
 	private Texture cursor;
 	private Framebuffer lightmap;
 	private int cx, cy;
+	private float camX, camY;
 	private UI ui;
 	private Player player;
+	private Level level;
 	
 	@Override
 	public void setup() {		
 		cursor = new Texture("resources/textures/cursor.png");
 		
-		Font.setupFonts();
+		Font.load();
+		Tile.load();
 		
 		batch = new Batch(256);
 		batch.useShader(new Shader("resources/shaders/shader.frag", "resources/shaders/shader.vert"));
 		
 		lightBatch = new Batch(256);
-		
 		lightmap = new Framebuffer(160, 160);
 		
 		cx = 0;
@@ -34,6 +39,7 @@ public class App extends Game {
 		
 		player = new Player("zac");
 		ui = new UI(player);
+		level = new Level(128, 128);
 	}
 
 	@Override
@@ -43,7 +49,8 @@ public class App extends Game {
 
 	@Override
 	public void update(double dt) {
-		
+		camX += 20 * dt;
+		camY = (float) (50 + 50 * Math.sin(camX / 32));
 	}
 
 	@Override
@@ -57,6 +64,7 @@ public class App extends Game {
 		batch.uniform1i(Shader.LIGHTMAP_LOC, 1);
 		
 		batch.start();
+		level.draw(batch, 9, 28, camX, camY);
 		ui.draw(batch);
 		batch.draw(cursor, cx - 1, cy - cursor.getHeight() + 2);
 		batch.end();

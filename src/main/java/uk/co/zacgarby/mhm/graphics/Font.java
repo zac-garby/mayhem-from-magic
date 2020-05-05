@@ -97,6 +97,12 @@ public class Font {
 		draw(batch, text, x - width/2, y);
 	}
 	
+	public void drawRight(Batch batch, String text, int x, int y) {
+		int width = measure(text);
+		
+		draw(batch, text, x - width, y);
+	}
+	
 	public int measure(String text) {
 		if (!caseSensitive) {
 			text = text.toLowerCase();
@@ -125,7 +131,7 @@ public class Font {
 		return source;
 	}
 	
-	public static void setupFonts() {
+	public static void load() {
 		Font.NORMAL = new Font(new Texture("resources/fonts/font.png"),
 				"abcdefghijklmnopqrstuvwxyz0123456789!.,:;()[]-+*÷/",
 				new int[] {4, 4, 4, 4, 3, 3, 4, 4, 3, 4, 4, 3, 5, 5, 4, 4, 5, 4, 4, 3, 4, 5, 5, 4, 5, 6,

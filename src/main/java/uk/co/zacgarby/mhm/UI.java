@@ -16,8 +16,8 @@ public class UI {
 	public void draw(Batch batch) {
 		batch.draw(background, 0, 0);
 		
-		Font.XP.drawCentered(batch, String.valueOf(player.getLevel()), 194, 128);
-		Font.XP.drawCentered(batch, String.valueOf(player.getLevel() + 1), 244, 128);
+		Font.XP.drawRight(batch, String.valueOf(player.getLevel()), 196, 128);
+		Font.XP.draw(batch, String.valueOf(player.getLevel() + 1), 239, 128);
 		
 		Font.NORMAL.draw(batch, String.valueOf(player.getSilver()), 191, 112);
 		Font.NORMAL.draw(batch, String.valueOf(player.getGold()), 214, 112);
@@ -25,6 +25,6 @@ public class UI {
 		
 		Font.NAME.drawCentered(batch, player.getName(), 212, 180);
 		
-		Font.CLASSES.drawCentered(batch, "w", 212, 160);
+		Font.CLASSES.drawCentered(batch, String.valueOf(player.getTitle().getFontChar()), 212, 160);
 	}
 }

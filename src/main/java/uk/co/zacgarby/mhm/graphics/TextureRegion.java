@@ -1,6 +1,6 @@
 package uk.co.zacgarby.mhm.graphics;
 
-class TextureRegion {
+public class TextureRegion {
 	private float x, y, w, h, tx1, ty1, tx2, ty2;
 	private Texture tex;
 	

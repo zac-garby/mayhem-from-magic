@@ -2,7 +2,7 @@ package uk.co.zacgarby.mhm;
 
 public class Entity {
 	private String name;
-	private int health;
+	private int health, maxHealth;
 	private int x, y;
 	private int xp;
 	
@@ -71,5 +71,13 @@ public class Entity {
 	
 	public int getLevel() {
 		return Math.max((int) Math.floor(5 * Math.log10((double)xp / 10.0 + 1)), 1);
+	}
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 }
