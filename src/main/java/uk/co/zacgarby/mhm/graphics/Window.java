@@ -98,7 +98,7 @@ public class Window {
 
 			// Get the window size passed to glfwCreateWindow
 			glfwGetWindowSize(window, pWidth, pHeight);
-
+			
 			// Get the resolution of the primary monitor
 			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
@@ -129,9 +129,7 @@ public class Window {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	private void loop() {
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		
+	private void loop() {		
 		lastFrame = glfwGetTime();
 
 		while (!glfwWindowShouldClose(window)) {			
@@ -142,7 +140,6 @@ public class Window {
 			glfwPollEvents();
 			delegate.update(dt);
 			
-			glClear(GL_COLOR_BUFFER_BIT);
 			delegate.render();
 			
 			glfwSwapBuffers(window);

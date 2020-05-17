@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 project.ext.lwjglVersion = "3.2.3"
@@ -38,17 +39,16 @@ dependencies {
 	runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
-
+	
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
 
-jar {
-	manifest {
-		attributes 'Main-Class': 'uk.co.zacgarby.mhm.App',
-			 	   'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
-	}
-}
-
 mainClassName = 'uk.co.zacgarby.mhm.App'
 applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
+
+shadowJar {
+	baseName = 'mhm'
+	classifier = ''
+	archiveVersion = ''
+}

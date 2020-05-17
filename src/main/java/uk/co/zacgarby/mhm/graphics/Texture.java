@@ -1,9 +1,11 @@
 package uk.co.zacgarby.mhm.graphics;
 
 import static org.lwjgl.opengl.GL33.*;
-import static org.lwjgl.stb.STBImage.*;
+import static org.lwjgl.stb.STBImage.stbi_failure_reason;
+import static org.lwjgl.stb.STBImage.stbi_load;
+import static org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -66,7 +68,7 @@ public class Texture {
 			stbi_set_flip_vertically_on_load(true);
 			ByteBuffer image = stbi_load(path, w, h, comp, 4);
 			if (image == null) {
-				throw new RuntimeException("Failed to load a texture file!\n" + stbi_failure_reason());
+				throw new RuntimeException("Failed to load a texture file: " + path + ". " + stbi_failure_reason());
 			}
 			
 			width = w.get();

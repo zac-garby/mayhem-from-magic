@@ -2,10 +2,14 @@ package uk.co.zacgarby.mhm.graphics;
 
 import static org.lwjgl.opengl.GL33.*;
 
+import org.lwjgl.opengl.GL33;
+
 public class Framebuffer {
 	private int width, height;
 	private int handle;
 	private Texture tex;
+	
+	private Integer prevW = null, prevH = null;
 	
 	public Framebuffer(int width, int height) {
 		this.width = width;
@@ -36,22 +40,21 @@ public class Framebuffer {
 	public int getHeight() {
 		return height;
 	}
-
-	private void bind() {
-		glBindFramebuffer(GL_FRAMEBUFFER, handle);
-	}
-	
-	private void unbind() {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
 	
 	public void start() {
-		bind();
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		if (prevW == null || prevH == null) {
+			int[] vp = new int[4];
+			GL33.glGetIntegerv(GL33.GL_VIEWPORT, vp);
+			prevW = vp[2];
+			prevH = vp[3];
+		}
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, handle);
+		glViewport(0, 0, width, height);
 	}
 	
 	public void end() {
-		unbind();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, prevW, prevH);
 	}
 }

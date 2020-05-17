@@ -1,7 +1,5 @@
 package uk.co.zacgarby.mhm.graphics;
 
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL33.*;
 
 import java.io.IOException;
@@ -13,14 +11,15 @@ import java.nio.file.Paths;
 import org.joml.Matrix4f;
 
 public class Shader {
-	public static int POSITION_LOC = 1;
-	public static int COLOUR_LOC = 2;
-	public static int TEXCOORD_LOC = 3;
-	public static int ATLAS_LOC, LIGHTMAP_LOC;
+	public int POSITION_LOC = 1;
+	public int COLOUR_LOC = 2;
+	public int TEXCOORD_LOC = 3;
+	public int ATLAS_LOC = 4;
+	public int LIGHTMAP_LOC = 5;
 	
 	private int program;
 	
-	public Shader(String fragPath, String vertPath) {
+	public Shader(String fragPath, String vertPath, float w, float h) {
 		String fragSrc = null, vertSrc = null;
 		
 		try {
@@ -51,16 +50,21 @@ public class Shader {
 		glBindAttribLocation(program, 1, "position");
 		glBindAttribLocation(program, 2, "colour");
 		glBindAttribLocation(program, 3, "texcoord");
+		
 		glLinkProgram(program);
 		if (glGetProgrami(program, GL_LINK_STATUS) != GL_TRUE) {
 			throw new RuntimeException(glGetProgramInfoLog(program));
 		}
 		
-		Shader.ATLAS_LOC = glGetUniformLocation(program, "atlas");
-		Shader.LIGHTMAP_LOC = glGetUniformLocation(program, "lightmap");
-		
 		use();
 		
+		POSITION_LOC = glGetAttribLocation(program, "position");
+		COLOUR_LOC = glGetAttribLocation(program, "colour");
+		TEXCOORD_LOC = glGetAttribLocation(program, "texcoord");
+		
+		ATLAS_LOC = glGetUniformLocation(program, "atlas");
+		LIGHTMAP_LOC = glGetUniformLocation(program, "lightmap");
+				
 		int uniModel = glGetUniformLocation(program, "model");
 		Matrix4f model = new Matrix4f();
 		glUniformMatrix4fv(uniModel, false, model.get(new float[16]));
@@ -70,12 +74,16 @@ public class Shader {
 		glUniformMatrix4fv(uniView, false, view.get(new float[16]));
 		
 		int uniProj = glGetUniformLocation(program, "projection");
-		Matrix4f proj = new Matrix4f().ortho(0f, 250f, 0f, 200f, -1f, 1f);
+		Matrix4f proj = new Matrix4f().ortho(0f, w, 0f, h, -1f, 1f);
 		glUniformMatrix4fv(uniProj, false, proj.get(new float[16]));
 	}
 	
 	public void use() {
 		glUseProgram(program);
+	}
+	
+	public int getProgram() {
+		return program;
 	}
 	
 	private static String readFile(String path, Charset encoding) throws IOException {

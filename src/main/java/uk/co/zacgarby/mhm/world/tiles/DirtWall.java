@@ -24,6 +24,15 @@ public class DirtWall extends Tile {
 		batch.draw(regions[texIndex], x, y);
 	}
 	
+	@Override
+	public void drawLightmap(Batch batch, Level level, int x, int y) {
+		if (texIndex == null) {
+			texIndex = level.neighbourhood(getX(), getY(), DirtWall.class);
+		}
+		
+		batch.draw(Tile.WALL_LM[texIndex], x, y);
+	}
+	
 	public static void load() {
 		for (int i = 0; i < 16; i++) {
 			regions[i] = new TextureRegion((i + 6) * 10, 0, 10, 10, TILESET);

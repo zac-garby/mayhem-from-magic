@@ -18,7 +18,7 @@ public class Level {
 		
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
-				if (Math.random() < 0.75) {
+				if (Math.random() < 0.85) {
 					tiles[j][i] = new Dirt(i, j);
 				} else {
 					tiles[j][i] = new DirtWall(i, j);
@@ -51,6 +51,21 @@ public class Level {
 				if (i < 0 || j < 0 || i >= width || j >= height) continue;
 				
 				get(i, j).draw(batch, this,
+						(int) (x + i * Tile.SIZE - cx),
+						(int) (y + j * Tile.SIZE - cy));
+			}
+		}
+	}
+	
+	public void drawLightmap(Batch batch, float x, float y, float cx, float cy) {
+		int sx = (int) (cx / 10);
+		int sy = (int) (cy / 10);
+		
+		for (int i = sx; i < sx + VIEWPORT_W + 2; i++) {
+			for (int j = sy; j < sy + VIEWPORT_H + 2; j++) {
+				if (i < 0 || j < 0 || i >= width || j >= height) continue;
+				
+				get(i, j).drawLightmap(batch, this,
 						(int) (x + i * Tile.SIZE - cx),
 						(int) (y + j * Tile.SIZE - cy));
 			}

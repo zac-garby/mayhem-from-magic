@@ -1,19 +1,12 @@
 package uk.co.zacgarby.mhm.graphics;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 public class Batch {
@@ -23,7 +16,7 @@ public class Batch {
 	private Texture lastTexture;
 	private int vbo, ebo, amount, maxSprites;
 	
-	public Batch(int maxSprites) {
+	public Batch(int maxSprites, float w, float h) {
 		this.maxSprites = maxSprites;
 		
 		vertices = MemoryUtil.memAllocFloat(maxSprites * 4 * 7);
@@ -33,20 +26,20 @@ public class Batch {
 		vbo = glGenBuffers();		
 		ebo = glGenBuffers();
 		
-		shader = new Shader("resources/shaders/passthrough.frag", "resources/shaders/passthrough.vert");
+		shader = new Shader("resources/shaders/passthrough.frag", "resources/shaders/passthrough.vert", w, h);
 	}
 	
 	public void start() {
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		
-		glEnableVertexAttribArray(Shader.POSITION_LOC);
+		glEnableVertexAttribArray(shader.POSITION_LOC);
 		glVertexAttribPointer(1, 2, GL_FLOAT, false, 7 * 4, 0);
 		
-		glEnableVertexAttribArray(Shader.COLOUR_LOC);
+		glEnableVertexAttribArray(shader.COLOUR_LOC);
 		glVertexAttribPointer(2, 3, GL_FLOAT, false, 7 * 4, 2 * 4);
 		
-		glEnableVertexAttribArray(Shader.TEXCOORD_LOC);
+		glEnableVertexAttribArray(shader.TEXCOORD_LOC);
 		glVertexAttribPointer(3, 2, GL_FLOAT, false, 7 * 4, 5 * 4);
 	}
 	
@@ -115,15 +108,16 @@ public class Batch {
 		triangles.flip();
 		
 		shader.use();
-		glUniform1i(Shader.ATLAS_LOC, 0);
-		
+		glUniform1i(shader.ATLAS_LOC, 0);
+		glUniform1i(shader.LIGHTMAP_LOC, 1);
+				
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
 		
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles, GL_STATIC_DRAW);
 		
-		lastTexture.bind();
+		lastTexture.bind(0);
 		glDrawElements(GL_TRIANGLES, 6 * amount, GL_UNSIGNED_INT, 0);
 		
 		vertices.limit(vertices.capacity());
@@ -148,5 +142,9 @@ public class Batch {
 	
 	public void useShader(Shader s) {
 		shader = s;
+	}
+	
+	public Shader getShader() {
+		return shader;
 	}
 }
